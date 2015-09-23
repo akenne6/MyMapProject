@@ -21,8 +21,8 @@
 
       <ion-list>
 
-        <ion-item nav-clear menu-close ng-click="goTo(locationKey)" ng-repeat="(locationKey,location) in locations track by location.name">
-          {{location.name}}
+        <ion-item nav-clear menu-close ng-click="goTo(locationKey)" ng-repeat="(locationKey,location) in locations track by location.message">
+          {{location.message}}
         </ion-item>
 
       </ion-list>
