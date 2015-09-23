@@ -128,13 +128,22 @@ angular.module('starter').controller('MapController', [
                         $scope.map.markers = $scope.locations;
                         console.log($scope.locations);
                     });
-                    $scope.map.markers.now = {
+                    var locationMarker = {
                         lat:position.coords.latitude,
                         lng:position.coords.longitude,
                         message: "You Are Here",
+                        icon: {
+                            type: 'extraMarker',
+                            icon: 'fa-circle',
+                            markerColor: 'orange', //'red', 'darkred', 'orange', 'green', 'darkgreen', 'blue', 'purple', 'darkpuple', 'cadetblue'
+                            iconColor: 'white', //'white', 'black'
+                            prefix: 'fa',
+                            shape: 'circle'
+                        },
                         focus: true,
                         draggable: false
                     };
+                    $scope.map.markers.push(locationMarker);
 
                 }, function(err) {
                     // error

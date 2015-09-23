@@ -2,6 +2,11 @@
     var places = {};
     places.savedLocations = [];
 
+    var getMessage = function (title) {
+        var url = "http://en.wikipedia.org/wiki/" + title;
+        return "<a target='_blank' href='" + url + "'>" + title + "</a>";
+    }
+
     return function (longitude, latitude) {
         console.log("LONG: " + longitude + ", LAT: " + latitude);
         return $http({
@@ -14,7 +19,16 @@
                 place = {
                     lat: rawPlaces[i].lat,
                     lng: rawPlaces[i].lon,
-                    message: rawPlaces[i].title,
+                    message: getMessage(rawPlaces[i].title),
+                    name: rawPlaces[i].title,
+                    icon: {
+                        type: 'extraMarker',
+                        icon: 'fa-circle',
+                        markerColor: 'purple', //'red', 'darkred', 'orange', 'green', 'darkgreen', 'blue', 'purple', 'darkpuple', 'cadetblue'
+                        iconColor: 'white', //'white', 'black'
+                        prefix: 'fa',
+                        shape: 'circle'
+                    },
                     focus: true,
                     draggable: false
 
