@@ -4,7 +4,7 @@ angular.module('starter').controller('MapController',
     '$stateParams',
     '$ionicModal',
     '$ionicPopup',
-    'DummyService',
+    'PlacesService',
     'LocationsService',
     'InstructionsService',
     function(
@@ -13,7 +13,7 @@ angular.module('starter').controller('MapController',
       $stateParams,
       $ionicModal,
       $ionicPopup,
-      DummyService,
+      PlacesService,
       LocationsService,
       InstructionsService
       ) {
@@ -22,8 +22,14 @@ angular.module('starter').controller('MapController',
        * Once state loaded, get put map on scope.
        */
       $scope.$on("$stateChangeSuccess", function() {
-
-        $scope.locations = LocationsService.savedLocations;
+        $scope.locations = [];
+        PlacesService.then(function (data) {
+            $scope.locations = data.savedLocations;
+            console.log($scope.locations);
+        });
+        $scope.locations2 = LocationsService.savedLocations;
+        console.log($scope.locations);
+        console.log($scope.locations2);
         $scope.newLocation;
 
         if(!InstructionsService.instructions.newLocations.seen) {
@@ -50,7 +56,8 @@ angular.module('starter').controller('MapController',
               enable: ['context'],
               logic: 'emit'
             }
-          }
+          },
+          center: {}
         };
 
         $scope.goTo(0);
@@ -82,9 +89,9 @@ angular.module('starter').controller('MapController',
       });
 
       $scope.saveLocation = function() {
-        LocationsService.savedLocations.push($scope.newLocation);
+        $scope.locations.push($scope.newLocation);
         $scope.modal.hide();
-        $scope.goTo(LocationsService.savedLocations.length - 1);
+        $scope.goTo($scope.locations.length - 1);
       };
 
       /**
@@ -92,23 +99,25 @@ angular.module('starter').controller('MapController',
        * @param locationKey
        */
       $scope.goTo = function(locationKey) {
+          if ($scope.locations.length === 0) {
+              $scope.locate();
+          } else {
+              var location = $scope.locations[locationKey];
+              console.log(location);
+              $scope.map.center = {
+                  lat: location.lat,
+                  lng: location.lng,
+                  zoom: 12
+              };
 
-        var location = LocationsService.savedLocations[locationKey];
-
-        $scope.map.center  = {
-          lat : location.lat,
-          lng : location.lng,
-          zoom : 12
-        };
-
-        $scope.map.markers[locationKey] = {
-          lat:location.lat,
-          lng:location.lng,
-          message: location.name,
-          focus: true,
-          draggable: false
-        };
-
+              $scope.map.markers[locationKey] = {
+                  lat: location.lat,
+                  lng: location.lng,
+                  message: location.name,
+                  focus: true,
+                  draggable: false
+              };
+          }
       };
 
       /**
@@ -119,6 +128,7 @@ angular.module('starter').controller('MapController',
         $cordovaGeolocation
           .getCurrentPosition()
           .then(function (position) {
+              console.log(position);
             $scope.map.center.lat  = position.coords.latitude;
             $scope.map.center.lng = position.coords.longitude;
             $scope.map.center.zoom = 15;
